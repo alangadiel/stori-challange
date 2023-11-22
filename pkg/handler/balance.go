@@ -31,7 +31,7 @@ func (h Handler) PostBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.Service.PostBalance(ctx, br.FileName, br.Email); err != nil {
+	if err := h.BalanceService.PostBalance(ctx, br.FileName, br.Email); err != nil {
 		log.Default().Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

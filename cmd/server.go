@@ -28,9 +28,18 @@ func main() {
 		defer r.Close(ctx)
 	}
 
+	var emailSrv srv.EmailService
+	{
+		var err error
+		if emailSrv, err = srv.CreateEmailService(); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	h := handler.Handler{
-		Service: srv.Service{
-			Repository: r,
+		BalanceService: srv.BalanceService{
+			Repository:   r,
+			EmailService: emailSrv,
 		},
 	}
 

@@ -3,11 +3,18 @@ package srv
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/alangadiel/stori-challenge/pkg/model"
+	"github.com/alangadiel/stori-challenge/pkg/repo"
 )
 
-func (s Service) PostBalance(ctx context.Context, fileName, email string) error {
+type BalanceService struct {
+	repo.Repository
+	EmailService
+}
+
+func (s BalanceService) PostBalance(ctx context.Context, fileName, email string) error {
 	var transactions []model.Transaction
 	{
 		var err error
@@ -30,9 +37,16 @@ func (s Service) PostBalance(ctx context.Context, fileName, email string) error 
 		}
 	}
 
-	fmt.Println(balance)
-
 	// Send email
+	var emailBody strings.Builder
+	emailBody.WriteString(fmt.Sprintf("Total Amount: %.2f\n", balance.TotalAmount))
+	for _, monthBalance := range balance.MonthlyBalances {
+		emailBody.WriteString(fmt.Sprintf("%s: %d transactions, average debit %.2f, average credit %.2f\n",
+			monthBalance.Month, monthBalance.NumberOfTransactions, monthBalance.AvgDebit, monthBalance.AvgCredit))
+	}
+	if err := s.EmailService.SendEmail(email, emailBody.String()); err != nil {
+		return fmt.Errorf("error sending email: %w", err)
+	}
 
 	return nil
 }
