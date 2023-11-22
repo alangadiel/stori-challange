@@ -1,6 +1,5 @@
 CREATE TABLE transactions (
-    id SERIAL PRIMARY KEY,
-    external_id INT UNIQUE NOT NULL,
+    id INT PRIMARY KEY,
     date DATE NOT NULL,
     amount NUMERIC(10,2) NOT NULL
 );

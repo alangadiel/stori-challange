@@ -11,7 +11,7 @@ import (
 func (r *Repository) SaveTransactions(ctx context.Context, trs []model.Transaction) error {
 	_, err := r.dbConn.CopyFrom(ctx,
 		pgx.Identifier{"transactions"},
-		[]string{"external_id", "date", "amount"},
+		[]string{"id", "date", "amount"},
 		CopyFromTransactions(trs))
 
 	if err != nil {

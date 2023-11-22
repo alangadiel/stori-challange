@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	ServerPort           = "8080"
-	TransactionsEndpoint = "/transactions"
+	ServerPort      = "8080"
+	BalanceEndpoint = "/balance"
 )
 
 func main() {
@@ -35,13 +35,13 @@ func main() {
 	}
 
 	// Configure endpoint
-	http.HandleFunc(TransactionsEndpoint, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(BalanceEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			return
 		}
 
-		h.PostTransactions(w, r)
+		h.PostBalance(w, r)
 	})
 
 	// Start server

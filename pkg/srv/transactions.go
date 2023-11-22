@@ -1,7 +1,6 @@
 package srv
 
 import (
-	"context"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -12,34 +11,9 @@ import (
 	"github.com/alangadiel/stori-challenge/pkg/model"
 )
 
-const (
-	transactionsFile = "transactions.csv"
-)
-
-func (s Service) PostTransactions(ctx context.Context) error {
-	var transactions []model.Transaction
-	{
-		var err error
-		if transactions, err = readTransactionsFile(); err != nil {
-			return fmt.Errorf("error reading transactions file: %w", err)
-		}
-	}
-
-	// Save transactions
-	if err := s.Repository.SaveTransactions(ctx, transactions); err != nil {
-		return fmt.Errorf("error saving transactions: %w", err)
-	}
-
-	// Get transactions balance
-
-	// Send email
-
-	return nil
-}
-
-func readTransactionsFile() ([]model.Transaction, error) {
+func readTransactionsFile(fileName string) ([]model.Transaction, error) {
 	// open file transactions.csv
-	file, err := os.Open(transactionsFile)
+	file, err := os.Open(fileName)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file: %w", err)
 	}
