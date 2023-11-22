@@ -1,1 +1,1 @@
-# stori-challange
+# stori-challenge
