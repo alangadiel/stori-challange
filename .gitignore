@@ -22,3 +22,5 @@ go.work
 
 data/
 .DS_Store
+
+*.env

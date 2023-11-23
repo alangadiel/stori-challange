@@ -2,12 +2,10 @@ package repo
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/jackc/pgx/v5"
-)
-
-const (
-	dbURL = "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
 )
 
 type Repository struct {
@@ -15,7 +13,13 @@ type Repository struct {
 }
 
 func CreateRepository(ctx context.Context) (Repository, error) {
-	conn, err := pgx.Connect(ctx, dbURL)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:5432/%s?sslmode=disable",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_HOST"),
+		os.Getenv("POSTGRES_DB"))
+
+	conn, err := pgx.Connect(ctx, connStr)
 	if err != nil {
 		return Repository{}, err
 	}

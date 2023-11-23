@@ -1,21 +1,22 @@
-version: '3'
+version: '3.7'
 services:
   db:
     image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+    env_file: .env
     ports:
       - 5432:5432
     volumes:
       - ./data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-  # server:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - db
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    volumes:
+      - ./transactions.csv:/transactions.csv
+    restart: on-failure

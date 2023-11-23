@@ -2,11 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
 
 	"github.com/alangadiel/stori-challenge/pkg/model"
+	"github.com/alangadiel/stori-challenge/pkg/srv"
 )
 
 func (h Handler) PostBalance(w http.ResponseWriter, r *http.Request) {
@@ -32,6 +34,10 @@ func (h Handler) PostBalance(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.BalanceService.PostBalance(ctx, br.FileName, br.Email); err != nil {
+		if errors.Is(err, srv.ErrFileNotFound) {
+			http.Error(w, srv.ErrFileNotFound.Error(), http.StatusNotFound)
+			return
+		}
 		log.Default().Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

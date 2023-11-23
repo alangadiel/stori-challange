@@ -2,6 +2,7 @@ package srv
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -11,10 +12,17 @@ import (
 	"github.com/alangadiel/stori-challenge/pkg/model"
 )
 
+var (
+	ErrFileNotFound = errors.New("file not found")
+)
+
 func readTransactionsFile(fileName string) ([]model.Transaction, error) {
 	// open file transactions.csv
 	file, err := os.Open(fileName)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, ErrFileNotFound
+		}
 		return nil, fmt.Errorf("error opening file: %w", err)
 	}
 	defer file.Close()
